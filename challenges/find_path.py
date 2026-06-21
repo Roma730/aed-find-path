@@ -4,11 +4,6 @@ import math
 from data_structures.city_map import CityMap
 
 
-def _distance(p1: tuple[float, float], p2: tuple[float, float]) -> float:
-    """Distância euclidiana entre dois pontos (x, y)."""
-    return math.hypot(p1[0] - p2[0], p1[1] - p2[1])
-
-
 def find_path(
     city_map: CityMap,
     start: int,
@@ -20,8 +15,8 @@ def find_path(
     if start == goal:
         return [start]
 
-    def heuristic(node: int) -> float:
-        return _distance(city_map.intersections[node], city_map.intersections[goal])
+    def heuristic(_node: int) -> float:
+        return 0.0
 
     counter = 0  # desempate no heap, evita comparar tuplas com node igual
     open_heap = [(heuristic(start), counter, start)]
@@ -40,14 +35,11 @@ def find_path(
             continue
         closed.add(current)
 
-        current_pos = city_map.intersections[current]
-
         for neighbor in city_map.roads.get(current, []):
             if neighbor in closed:
                 continue
 
-            step_cost = _distance(current_pos, city_map.intersections[neighbor])
-            tentative_g = g_score[current] + step_cost
+            tentative_g = g_score[current] + 1  # custo uniforme por aresta
 
             if tentative_g < g_score.get(neighbor, math.inf):
                 came_from[neighbor] = current
